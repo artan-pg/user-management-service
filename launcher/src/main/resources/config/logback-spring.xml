@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration scan="true" scanPeriod="60 seconds">
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <springProperty name="LOGGING_FILE_PATH" source="logging.file.path"/>
+    <springProperty name="LOGGING_FILE_NAME" source="logging.file.name"/>
+
+    <property name="TODAY_PATH_PATTERN" value="${LOGGING_FILE_PATH}/today"/>
+    <property name="ARCHIVE_PATH_PATTERN" value="${LOGGING_FILE_PATH}/archive/%d{yyyy/MM, aux}"/>
+
+    <property name="FILE_PATTERN"
+              value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} --- ${LOG_LEVEL_PATTERN:-%5p} --- ${PID:- } ---[%thread] --- %class:%L - %m ${LOG_EXCEPTION_CONVERSION_WORD:-%wEx} %n"/>
+    <property name="CONSOLE_PATTERN"
+              value="%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(---){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(---){faint} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%thread]){faint} %clr(---){faint} %clr(%class:%L){cyan} - %m ${LOG_EXCEPTION_CONVERSION_WORD:-%wEx} %n"/>
+
+    <springProfile name="dev">
+        <logger name="com.github.artanpg.user" level="TRACE" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="MAIN"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="test">
+        <logger name="com.github.artanpg.user" level="TRACE" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="MAIN"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="uat">
+        <logger name="com.github.artanpg.user" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="MAIN"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="com.github.artanpg.user" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="MAIN"/>
+        </logger>
+
+        <logger name="org.xnio" level="WARN"/>
+        <logger name="io.undertow" level="WARN"/>
+        <logger name="io.undertow.websockets.jsr" level="ERROR"/>
+    </springProfile>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="MAIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${TODAY_PATH_PATTERN}/${LOGGING_FILE_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${ARCHIVE_PATH_PATTERN}/${LOGGING_FILE_NAME}-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <maxFileSize>1024MB</maxFileSize>
+            <maxHistory>180</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <Root level="${logging.level.root}">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="MAIN"/>
+    </Root>
+</configuration>

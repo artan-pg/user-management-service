@@ -1,0 +1,80 @@
+#Server embedded configuration
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+  forward-headers-strategy: native
+  servlet:
+    context-path: /@context-path@
+    application-display-name: @application-name@
+    encoding:
+      charset: utf-8
+      force: true
+      enabled: true
+      force-request: true
+      force-response: true
+  compression:
+    enabled: true
+  undertow:
+    max-cookies: 20
+    max-headers: 20
+    max-parameters: 10
+    max-http-post-size: 2MB
+    options:
+      server:
+        record-request-start-time: true
+
+#Spring configuration
+spring:
+  application:
+    name: @application-name@
+  profiles:
+    active: ${ACTIVE_PROFILES:dev}
+  main:
+    banner-mode: off
+    web-application-type: servlet
+  web:
+    locale: ${LOCALE:fa_IR}
+    resources:
+      add-mappings: false
+  mvc:
+    format:
+      time: HH:mm:ss
+      date: yyyy-MM-dd
+      date-time: yyyy-MM-dd HH:mm:ss
+    converters:
+      preferred-json-mapper: jackson
+  lifecycle:
+    timeout-per-shutdown-phase: ${GRACEFUL_SHUTDOWN_TIMEOUT:120s}
+  messages:
+    basename: classpath:i18n/messages
+    cache-duration: 3600
+  jackson:
+    locale: ${spring.web.locale}
+    time-zone: ${TIME_ZONE:Asia/Tehran}
+    date-format: yyyy-MM-dd HH:mm:ss:SSS
+    default-property-inclusion: non_empty
+    mapper:
+      accept_case_insensitive_enums: true
+      accept_case_insensitive_values: true
+      accept_case_insensitive_properties: true
+    serialization:
+      write_dates_as_timestamps: false
+      use-equality-for-object-id: true
+      write_durations_as_timestamps: false
+      write_date_timestamps_as_nanoseconds: false
+    deserialization:
+      fail_on_unknown_properties: false
+      read_unknown_enum_values_as_null: true
+      read_date_timestamps_as_nanoseconds: false
+
+#Custome application configuration
+
+#Logback logging configuration
+logging:
+  config: classpath:config/logback-spring.xml
+  file:
+    name: ${LOGGING_APP_FILE_NAME:launcher}
+    path: ${LOGGING_APP_FILE_PATH:logs}
+  level:
+    root: info
+    web: info
