@@ -1,0 +1,14 @@
+#Server embedded configuration
+
+#Spring configuration
+spring:
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+    add-properties: false
+
+#Custome application configuration
+
+#Logback logging configuration
