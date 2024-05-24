@@ -22,6 +22,9 @@ server:
     options:
       server:
         record-request-start-time: true
+  ssl:
+    bundle: "server"
+    enabled-protocols: TLSv1.3
 
 #Spring configuration
 spring:

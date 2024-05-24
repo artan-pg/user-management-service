@@ -1,6 +1,17 @@
 #Server embedded configuration
 
 #Spring configuration
+spring:
+  ssl:
+    bundle:
+      jks:
+        server:
+          key:
+            alias: "server"
+          keystore:
+            location: "classpath:keystore/dev/server.jks"
+            password: "72Nn5pvlJgmWRB1Z"
+            type: "PKCS12"
 
 #Custome application configuration
 
